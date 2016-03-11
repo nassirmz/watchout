@@ -9,8 +9,9 @@
   // methods
     // check for collisions ????
 
+
 var boardInfo = {
-  width: 600,
+  width: 800,
   height: 400
 };
 
@@ -30,3 +31,9 @@ var Player = function() {
   this.x = 300;
   this.y = 200;
 }
+
+d3.select(".board").append("svg")
+  .attr("width", boardInfo.width)
+  .attr("height", boardInfo.height);
+
+
