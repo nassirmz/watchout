@@ -25,3 +25,8 @@ var Asteroid = function() {
   this.y = Math.random() * boardInfo.height;
 }
 
+var Player = function() {
+  this.size = 30;
+  this.x = 300;
+  this.y = 200;
+}
