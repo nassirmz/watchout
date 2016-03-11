@@ -18,3 +18,10 @@ var scoreBoard = {
   curScore: 0,
   maxScore: 0
 }
+
+var Asteroid = function() {
+  this.size = Math.random() * 30 + 20;
+  this.x = Math.random() * boardInfo.width;
+  this.y = Math.random() * boardInfo.height;
+}
+
