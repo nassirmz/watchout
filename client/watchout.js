@@ -1,14 +1,7 @@
-// one object holds info on svg width, heigh ... DONE
-// one object hold scoreBoard info, maxScore, curScore DONE
-// create class called asteroid with properties size, widith, color ...
-  // add methods
-    // calculate where to move ...
-    // change size every 300 ms
-    // do something if collision
-// create class called player with properties like size width color, bind to arrow keys
-  // methods
-    // check for collisions ????
-
+// create Shuriken class
+  // looks like a star
+  // spins
+  // follows player
 
 var boardInfo = {
   width: 800,
@@ -22,35 +15,44 @@ var scoreBoard = {
 }
 
 var Asteroid = function() {
-  this.size = Math.random() * 15 + 10;
+  this.size = Math.random() * 10 + 10;
   this.x = Math.random() * (boardInfo.width-30);
   this.y = Math.random() * (boardInfo.height-30);
   this.xv = Math.random() * 3 + 3;
   this.yv = Math.random() * 3 + 3;
 }
-
-// Asteroid.prototype.move = function () {
-//   this.x += Math.cos(this.angle) * 50;
-//   this.y += Math.sin(this.angle) * 50;
-// }
-
 var Player = function() {
   this.size = 10;
   this.x = 400;
   this.y = 200;
 }
 
+var Shuriken = function() {
+  this.size = 10;
+  this.x = Math.random() * (boardInfo.width-30);
+  this.y = Math.random() * (boardInfo.height-30);
+}
+
+function createObjects(Class, num) {
+  var elements = [];
+  for(var i = 0; i<num; i+=1) {
+    var instance = new Class();
+    elements.push(instance);
+  }
+  return elements;
+}
+
+var asteroids = createObjects(Asteroid, 10);
+var shurikens = createObjects(Shuriken, 2);
+var players = createObjects(Player, 1);
+
+var player1 = players[0];
+
 var svg = d3.select(".board").append("svg")
   .attr("width", boardInfo.width)
   .attr("height", boardInfo.height);
 
-var asteroids = [];
-
-for(var i = 0; i<15; i+=1) {
-  asteroids.push(new Asteroid());
-}
-var player1 = new Player();
-var player1D3 = svg.selectAll("circle").data([player1])
+var player1D3 = svg.selectAll("circle").data(players)
   .enter().append("circle").attr("r", function(d) {return d.size})
   .attr("cx", function(d) {return d.x;})
   .attr("cy", function(d) {return d.y;})
@@ -75,7 +77,6 @@ d3.select("svg").on("mousemove", function() {
   scoreBoard.curScore++;
 })
 
-
 setInterval(function () {
   d3.selectAll(".asteroid")
   .attr("cx", function(d) {
@@ -93,7 +94,7 @@ setInterval(function () {
     return d.y;
   })
   .transition()
-  .duration(10);
+  .duration(15);
 
   if (scoreBoard.curScore > scoreBoard.maxScore) {
     scoreBoard.maxScore = scoreBoard.curScore
@@ -115,4 +116,4 @@ setInterval(function () {
   d3.select(".collisions span")
   .text("" + scoreBoard.collisions);
 
-}, 10);
+}, 15);
