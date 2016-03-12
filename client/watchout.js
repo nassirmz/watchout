@@ -20,11 +20,18 @@ var Asteroid = function() {
   this.y = Math.random() * (boardInfo.height-30) + 30;
   this.xv = Math.random() * 3 + 3;
   this.yv = Math.random() * 3 + 3;
+  this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+
 }
 var Player = function() {
   this.size = 10;
   this.x = 400;
   this.y = 200;
+  this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+}
+
+Player.prototype.changeColor = function () {
+  this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
 }
 
 var Shuriken = function() {
@@ -38,6 +45,7 @@ var Shuriken = function() {
   this.yv = Math.random() * 2 + 2;
   this.x = Math.random() * (boardInfo.width-30) + 30;
   this.y = Math.random() * (boardInfo.height-30) + 30;
+  this.color = '#'+Math.floor(Math.random()*16777215).toString(16);
 }
 
 Shuriken.prototype.movePoints = function () {
@@ -81,20 +89,22 @@ var player1 = players[0];
 
 var svg = d3.select(".board").append("svg")
   .attr("width", boardInfo.width)
-  .attr("height", boardInfo.height);
+  .attr("height", boardInfo.height)
+  .attr("fill", "yellow");
 
 var player1D3 = svg.selectAll("circle").data(players)
   .enter().append("circle").attr("r", function(d) {return d.size})
   .attr("cx", function(d) {return d.x;})
   .attr("cy", function(d) {return d.y;})
   .attr("class", "player")
-  .attr("fill", "red");
+  .attr("fill", "yellow");
 
 svg.selectAll("circle").data(asteroids)
   .enter().append("circle").attr("r", function(d) {return d.size})
   .attr("cx", function(d) {return d.x;})
   .attr("cy", function(d) { return d.y;})
   .attr("class", "asteroid")
+  .attr("fill", function(d) {return d.color});
 
 svg.selectAll(".shuriken")
   .data(shurikens)
@@ -104,17 +114,21 @@ svg.selectAll(".shuriken")
   .attr("dx", function(d) {return d.x;})
   .attr("dy", function(d) {return d.y;})
   .attr("class", "shuriken")
-  .attr("fill", "green");
+  .attr("fill", function(d) {
+    return d.color;
+  });
 
 
 d3.select("svg").on("mousemove", function() {
   var coordinates = d3.mouse(this);
   player1.x = coordinates[0];
   player1.y = coordinates[1];
+  player1.changeColor();
   player1D3.attr("cx", coordinates[0])
   .attr("cy", coordinates[1])
   .transition()
-  .duration(10);
+  .duration(10)
+  .attr("fill", player1.color);
   scoreBoard.curScore++;
 })
 
@@ -182,11 +196,12 @@ setInterval(function () {
     var dy = asteroid.y - player1.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
     if(distance < asteroid.size + player1.size) {
+      svg.attr("background-color", "black");
       scoreBoard.collisions++;
       scoreBoard.curScore = 0;
     }
   });
-
+  svg.attr("background-color", "yellow");
   d3.select(".current span")
   .text("" + scoreBoard.curScore);
   d3.select(".collisions span")
