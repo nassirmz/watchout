@@ -3,9 +3,31 @@
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 
+body {
+  background-color: black;
+}
+
 svg {
   display: block;
   margin: 5px auto;
   background-color: yellow;
 }
 
+.game {
+  width: 1000;
+  height: 1000;
+  display: block;
+  margin-top: 10%;
+}
+
+.scoreboard {
+  width: 800px;
+  display: block;
+  margin: 5px auto;
+  color: yellow;
+  font-family: courier;
+}
+
+.current {
+  color: green;
+}

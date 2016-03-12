@@ -16,8 +16,8 @@ var scoreBoard = {
 
 var Asteroid = function() {
   this.size = Math.random() * 10 + 10;
-  this.x = Math.random() * (boardInfo.width-30);
-  this.y = Math.random() * (boardInfo.height-30);
+  this.x = Math.random() * (boardInfo.width-30) + 30;
+  this.y = Math.random() * (boardInfo.height-30) + 30;
   this.xv = Math.random() * 3 + 3;
   this.yv = Math.random() * 3 + 3;
 }
@@ -34,10 +34,10 @@ var Shuriken = function() {
                 [-5,0], [-14.142,14.142],
                 [0,5]];
   this.size = 20;
-  this.xv = Math.random() * 3 + 3;
-  this.yv = Math.random() * 3 + 3;
-  this.x = Math.random() * (boardInfo.width-30);
-  this.y = Math.random() * (boardInfo.height-30);
+  this.xv = Math.random() * 2 + 2;
+  this.yv = Math.random() * 2 + 2;
+  this.x = Math.random() * (boardInfo.width-30) + 30;
+  this.y = Math.random() * (boardInfo.height-30) + 30;
 }
 
 Shuriken.prototype.movePoints = function () {
@@ -51,7 +51,10 @@ Shuriken.prototype.movePoints = function () {
 
   this.y += this.yv;
   this.x += this.xv;
-
+  if (this.x > boardInfo.width - this.size) this.x = boardInfo.width - this.size - 1
+  if (this.x < this.size) this.x = this.size + 1
+  if (this.y > boardInfo.height - this.size) this.y = boardInfo.height - this.size - 1
+  if (this.y < this.size) this.y = this.size + 1
   this.points.forEach((function(point) {
     point = point.slice();
     point[0] += this.x;
@@ -60,6 +63,7 @@ Shuriken.prototype.movePoints = function () {
   }).bind(this))
   return points;
 }
+
 function createObjects(Class, num) {
   var elements = [];
   for(var i = 0; i<num; i+=1) {
@@ -69,8 +73,8 @@ function createObjects(Class, num) {
   return elements;
 }
 
-var asteroids = createObjects(Asteroid, 2);
-var shurikens = createObjects(Shuriken, 1);
+var asteroids = createObjects(Asteroid, 8);
+var shurikens = createObjects(Shuriken, 3);
 var players = createObjects(Player, 1);
 
 var player1 = players[0];
@@ -134,7 +138,20 @@ setInterval(function () {
   .duration(15);
 
   shurikens.forEach(function(shuriken) {
-
+    if (shuriken.x > player1.x) {
+      shuriken.xv -= 0.1;
+      if (shuriken.xv < -5) shuriken.xv = -5;
+    } else if (shuriken.x < player1.x) {
+      shuriken.xv += 0.1;
+      if (shuriken.xv > 5) shuriken.xv = 5;
+    }
+    if (shuriken.y > player1.y) {
+      shuriken.yv -= 0.1;
+      if (shuriken.xv < -5) shuriken.yv = -5;
+    } else if (shuriken.y < player1.y) {
+      shuriken.yv += 0.1;
+      if (shuriken.yv > 5) shuriken.yv = 5;
+    }
   });
 
   d3.selectAll(".shuriken")
@@ -149,7 +166,18 @@ setInterval(function () {
   }
   d3.select(".highscore span")
   .text("" + scoreBoard.maxScore);
+
   asteroids.forEach(function (asteroid) {
+    var dx = asteroid.x - player1.x;
+    var dy = asteroid.y - player1.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    if(distance < asteroid.size + player1.size) {
+      scoreBoard.collisions++;
+      scoreBoard.curScore = 0;
+    }
+  });
+
+  shurikens.forEach(function (asteroid) {
     var dx = asteroid.x - player1.x;
     var dy = asteroid.y - player1.y;
     var distance = Math.sqrt(dx * dx + dy * dy);
