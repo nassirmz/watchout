@@ -62,6 +62,16 @@ svg.selectAll("circle").data(asteroids)
   .attr("cy", function(d) { return d.y;})
   .attr("class", "asteroid")
 
+console.log(player1D3);
+
+d3.select("svg").on("mousemove", function() {
+  var coordinates = d3.mouse(this);
+  player1D3.attr("cx", coordinates[0])
+  .attr("cy", coordinates[1])
+  .transition()
+  .duration(10);
+})
+
 
 setInterval(function () {
   d3.selectAll(".asteroid")
