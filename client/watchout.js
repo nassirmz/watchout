@@ -100,9 +100,11 @@ setInterval(function () {
   }
   d3.select(".highscore span")
   .text("" + scoreBoard.maxScore);
-
   asteroids.forEach(function (asteroid) {
-    if (asteroid.x === player1.x || asteroid.y === player1.y) {
+    var dx = asteroid.x - player1.x;
+    var dy = asteroid.y - player1.y;
+    var distance = Math.sqrt(dx * dx + dy * dy);
+    if(distance < asteroid.size + player1.size) {
       scoreBoard.collisions++;
       scoreBoard.curScore = 0;
     }
@@ -110,7 +112,7 @@ setInterval(function () {
 
   d3.select(".current span")
   .text("" + scoreBoard.curScore);
-  d3.select("collisions span")
+  d3.select(".collisions span")
   .text("" + scoreBoard.collisions);
 
 }, 10);
