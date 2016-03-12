@@ -33,15 +33,27 @@ var Shuriken = function() {
                 [0,-5], [-14.142,-14.142],
                 [-5,0], [-14.142,14.142],
                 [0,5]];
-  this.outerRadius = 20;
-  this.innerRadius = 10;
+  this.size = 20;
+  this.xv = Math.random() * 3 + 3;
+  this.yv = Math.random() * 3 + 3;
   this.x = Math.random() * (boardInfo.width-30);
   this.y = Math.random() * (boardInfo.height-30);
 }
 
 Shuriken.prototype.movePoints = function () {
   var points = "";
+  if (this.x >= (boardInfo.width - this.size) || this.x <= this.size) {
+    this.xv = -1 * this.xv;
+  }
+  if (this.y >= (boardInfo.height - this.size) || this.y <= this.size) {
+    this.yv = -1 * this.yv;
+  }
+
+  this.y += this.yv;
+  this.x += this.xv;
+
   this.points.forEach((function(point) {
+    point = point.slice();
     point[0] += this.x;
     point[1] += this.y;
     points += point.toString() + " ";
@@ -57,8 +69,8 @@ function createObjects(Class, num) {
   return elements;
 }
 
-var asteroids = createObjects(Asteroid, 10);
-var shurikens = createObjects(Shuriken, 2);
+var asteroids = createObjects(Asteroid, 2);
+var shurikens = createObjects(Shuriken, 1);
 var players = createObjects(Player, 1);
 
 var player1 = players[0];
@@ -120,6 +132,17 @@ setInterval(function () {
   })
   .transition()
   .duration(15);
+
+  shurikens.forEach(function(shuriken) {
+
+  });
+
+  d3.selectAll(".shuriken")
+    .attr("points", function(d) {
+      return d.movePoints();
+    })
+    .transition()
+    .duration(15);
 
   if (scoreBoard.curScore > scoreBoard.maxScore) {
     scoreBoard.maxScore = scoreBoard.curScore
