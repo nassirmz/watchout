@@ -28,11 +28,26 @@ var Player = function() {
 }
 
 var Shuriken = function() {
-  this.size = 10;
+  this.points = [[0,5], [14.142,14.142],
+                [5,0], [14.142,-14.142],
+                [0,-5], [-14.142,-14.142],
+                [-5,0], [-14.142,14.142],
+                [0,5]];
+  this.outerRadius = 20;
+  this.innerRadius = 10;
   this.x = Math.random() * (boardInfo.width-30);
   this.y = Math.random() * (boardInfo.height-30);
 }
 
+Shuriken.prototype.movePoints = function () {
+  var points = "";
+  this.points.forEach((function(point) {
+    point[0] += this.x;
+    point[1] += this.y;
+    points += point.toString() + " ";
+  }).bind(this))
+  return points;
+}
 function createObjects(Class, num) {
   var elements = [];
   for(var i = 0; i<num; i+=1) {
@@ -64,6 +79,16 @@ svg.selectAll("circle").data(asteroids)
   .attr("cx", function(d) {return d.x;})
   .attr("cy", function(d) { return d.y;})
   .attr("class", "asteroid")
+
+svg.selectAll(".shuriken")
+  .data(shurikens)
+  .enter()
+  .append("polygon")
+  .attr("points", function(d) {return d.movePoints()})
+  .attr("dx", function(d) {return d.x;})
+  .attr("dy", function(d) {return d.y;})
+  .attr("class", "shuriken")
+  .attr("fill", "green");
 
 
 d3.select("svg").on("mousemove", function() {
