@@ -6,4 +6,6 @@ Feel free to use it if you like. */
 svg {
   display: block;
   margin: 5px auto;
+  background-color: yellow;
 }
+

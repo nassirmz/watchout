@@ -22,9 +22,16 @@ var scoreBoard = {
 
 var Asteroid = function() {
   this.size = Math.random() * 15 + 10;
-  this.x = Math.random() * boardInfo.width;
-  this.y = Math.random() * boardInfo.height;
+  this.x = Math.random() * (boardInfo.width-30);
+  this.y = Math.random() * (boardInfo.height-30);
+  this.xv = Math.random() * 3 + 3;
+  this.yv = Math.random() * 3 + 3;
 }
+
+// Asteroid.prototype.move = function () {
+//   this.x += Math.cos(this.angle) * 50;
+//   this.y += Math.sin(this.angle) * 50;
+// }
 
 var Player = function() {
   this.size = 30;
@@ -38,14 +45,34 @@ var svg = d3.select(".board").append("svg")
 
 var asteroids = [];
 
-for(var i = 0; i<20; i+=1) {
+for(var i = 0; i<15; i+=1) {
   asteroids.push(new Asteroid());
 }
 
-svg.selectAll(".asteroid").data(asteroids)
+// console.log(asteroids);
+
+svg.selectAll("circle").data(asteroids)
   .enter().append("circle").attr("r", function(d) {return d.size})
   .attr("cx", function(d) {return d.x;})
-  .attr("cy", function(d) { return d.y;});
+  .attr("cy", function(d) { return d.y;})
 
 
-
+setInterval(function () {
+  svg.selectAll("circle")
+  .attr("cx", function(d) {
+    if (d.x >= (boardInfo.width - d.size) || d.x <= d.size) {
+      d.xv = -1 * d.xv;
+    }
+    d.x += d.xv;
+    return d.x;
+  })
+  .attr("cy", function(d) {
+    if (d.y >= boardInfo.height - d.size || d.y <= d.size) {
+      d.yv = -1 * d.yv;
+    }
+    d.y += d.yv;
+    return d.y;
+  })
+  .transition()
+  .duration(10);
+}, 10);
