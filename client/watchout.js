@@ -1,5 +1,5 @@
 // one object holds info on svg width, heigh ... DONE
-// one object hold scoreboard info, maxScore, curScore DONE
+// one object hold scoreBoard info, maxScore, curScore DONE
 // create class called asteroid with properties size, widith, color ...
   // add methods
     // calculate where to move ...
@@ -17,7 +17,8 @@ var boardInfo = {
 
 var scoreBoard = {
   curScore: 0,
-  maxScore: 0
+  maxScore: 0,
+  collisions: 0
 }
 
 var Asteroid = function() {
@@ -62,14 +63,16 @@ svg.selectAll("circle").data(asteroids)
   .attr("cy", function(d) { return d.y;})
   .attr("class", "asteroid")
 
-console.log(player1D3);
 
 d3.select("svg").on("mousemove", function() {
   var coordinates = d3.mouse(this);
+  player1.x = coordinates[0];
+  player1.y = coordinates[1];
   player1D3.attr("cx", coordinates[0])
   .attr("cy", coordinates[1])
   .transition()
   .duration(10);
+  scoreBoard.curScore++;
 })
 
 
@@ -91,4 +94,23 @@ setInterval(function () {
   })
   .transition()
   .duration(10);
+
+  if (scoreBoard.curScore > scoreBoard.maxScore) {
+    scoreBoard.maxScore = scoreBoard.curScore
+  }
+  d3.select(".highscore span")
+  .text("" + scoreBoard.maxScore);
+
+  asteroids.forEach(function (asteroid) {
+    if (asteroid.x === player1.x || asteroid.y === player1.y) {
+      scoreBoard.collisions++;
+      scoreBoard.curScore = 0;
+    }
+  });
+
+  d3.select(".current span")
+  .text("" + scoreBoard.curScore);
+  d3.select("collisions span")
+  .text("" + scoreBoard.collisions);
+
 }, 10);
