@@ -34,8 +34,8 @@ var Asteroid = function() {
 // }
 
 var Player = function() {
-  this.size = 30;
-  this.x = 300;
+  this.size = 10;
+  this.x = 400;
   this.y = 200;
 }
 
@@ -48,17 +48,23 @@ var asteroids = [];
 for(var i = 0; i<15; i+=1) {
   asteroids.push(new Asteroid());
 }
-
-// console.log(asteroids);
+var player1 = new Player();
+var player1D3 = svg.selectAll("circle").data([player1])
+  .enter().append("circle").attr("r", function(d) {return d.size})
+  .attr("cx", function(d) {return d.x;})
+  .attr("cy", function(d) {return d.y;})
+  .attr("class", "player")
+  .attr("fill", "red");
 
 svg.selectAll("circle").data(asteroids)
   .enter().append("circle").attr("r", function(d) {return d.size})
   .attr("cx", function(d) {return d.x;})
   .attr("cy", function(d) { return d.y;})
+  .attr("class", "asteroid")
 
 
 setInterval(function () {
-  svg.selectAll("circle")
+  d3.selectAll(".asteroid")
   .attr("cx", function(d) {
     if (d.x >= (boardInfo.width - d.size) || d.x <= d.size) {
       d.xv = -1 * d.xv;
