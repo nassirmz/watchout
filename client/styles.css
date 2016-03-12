@@ -7,6 +7,13 @@ body {
   background-color: black;
 }
 
+header h1 {
+  color: yellow;
+  font: 45px courier;
+  margin: 5% auto;
+  text-align: center;
+
+}
 svg {
   display: block;
   margin: 5px auto;
@@ -17,7 +24,7 @@ svg {
   width: 1000;
   height: 1000;
   display: block;
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 .scoreboard {
